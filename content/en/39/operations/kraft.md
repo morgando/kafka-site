@@ -510,7 +510,7 @@ Migrating brokers to KRaft
 
 
 
-  * On each broker, remove the `process.roles` configuration, replace the `node.id` with `broker.id` and restore the `zookeeper.connect` configuration to its previous value. If your cluster requires other ZooKeeper configurations for brokers, such as `zookeeper.ssl.protocol`, re-add those configurations as well. Then perform a rolling restart of all brokers. 
+  * On each broker, remove the `process.roles` configuration, replace the `node.id` with `broker.id` and restore the `zookeeper.connect` configuration to its previous value. If your cluster requires other ZooKeeper configurations for brokers, such as `zookeeper.ssl.protocol`, re-add those configurations as well. Restore `authorizer.class.name` to its previous value. Then perform a rolling restart of all brokers. 
   * Using `zookeeper-shell.sh`, compare the ZooKeeper controller epoch (`get /controller_epoch`) to the KRaft controller epoch (the `kraft_controller_epoch` field in `get /migration`). If the KRaft epoch is higher, run `set /controller_epoch <value>` (where `<value>` exceeds the KRaft epoch) to ensure the ZooKeeper controller will start with a higher epoch after reverting. 
   * Deprovision the KRaft controller quorum. 
   * Using `zookeeper-shell.sh`, run `delete /controller` so that one of the brokers can become the new old-style controller. Additionally, run `get /migration` followed by `delete /migration` to clear the migration state from ZooKeeper. This will allow you to re-attempt the migration in the future. The data read from "/migration" can be useful for debugging. 
